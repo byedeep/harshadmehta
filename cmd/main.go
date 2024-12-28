@@ -1,21 +1,10 @@
-package main
+package types
 
 import (
 	"fmt"
 	"os"
 	"time"
 )
-
-type Transactions struct {
-	Date        string
-	Description string
-	Enteries    []AccountEntery
-}
-
-type AccountEntery struct {
-	Name   string
-	Amount int
-}
 
 func main() {
 	var input int
