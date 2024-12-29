@@ -1,15 +1,17 @@
-package types
+package main
 
 import (
 	"fmt"
 	"os"
 	"time"
+
+	"github.com/byedeep/harshadmehta/internal/types"
 )
 
 func main() {
 	var input int
-	var transaction Transactions
-	var Entery AccountEntery
+	var transaction types.Transactions
+	var Entery types.AccountEntery
 	CurrentTime := time.Now()
 	CurrentDate := CurrentTime.Format("2006/01/02")
 
