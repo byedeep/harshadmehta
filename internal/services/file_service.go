@@ -4,10 +4,12 @@ import (
 	"encoding/csv"
 	"os"
 	"strconv"
+
+	"github.com/byedeep/harshadmehta/internal/types"
 )
 
-func LoadTransactions(filename string) ([]Transactions, error) {
-	var transaction []Transactions
+func LoadTransactions(filename string) ([]types.Transactions, error) {
+	var transaction []types.Transactions
 
 	file, err := os.Open(filename)
 
@@ -24,17 +26,17 @@ func LoadTransactions(filename string) ([]Transactions, error) {
 	}
 
 	CurrentId := -1
-	var currentTransaction Transactions
+	var currentTransaction types.Transactions
 
 	for _, record := range records {
 		if len(record) < 4 {
 			continue
 		}
-	}
 
-	id, _ := strconv.Atoi(record[0])
-	if err != nil {
-		contiune
-	}
+		id, err := strconv.Atoi(record[0])
+		if err != nil {
+			continue
+		}
 
+	}
 }
