@@ -11,7 +11,7 @@ import (
 func main() {
 	var input int
 	var transaction types.Transactions
-	var Entery types.AccountEntery
+	var Entery types.AccountEntry
 	CurrentTime := time.Now()
 	CurrentDate := CurrentTime.Format("2006/01/02")
 

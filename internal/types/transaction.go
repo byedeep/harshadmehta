@@ -1,12 +1,13 @@
 package types
 
 type Transactions struct {
+	Id          int
 	Date        string
 	Description string
-	Enteries    []AccountEntery
+	Entries     []AccountEntry
 }
 
-type AccountEntery struct {
+type AccountEntry struct {
 	Name   string
 	Amount int
 }
