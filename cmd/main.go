@@ -2,46 +2,122 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"time"
 
+	"github.com/byedeep/harshadmehta/internal/services"
 	"github.com/byedeep/harshadmehta/internal/types"
 )
 
 func main() {
 	var input int
-	var transaction types.Transactions
-	var Entery types.AccountEntry
+	var Transactions []types.Transactions
+	var Entry types.AccountEntry
+	filename := "../data/transactions.csv"
+	Transactions, err := services.LoadTransactions(filename)
+	if err != nil {
+		fmt.Print("error", err)
+		return
+	}
+
 	CurrentTime := time.Now()
 	CurrentDate := CurrentTime.Format("2006/01/02")
 
 	fmt.Println("1.Create a transaction")
 	fmt.Println("2.Update a transaction")
 	fmt.Println("3.Delete a transaction")
-	fmt.Println("4.Report a transaction")
+	fmt.Println("4.Report all transaction")
 	fmt.Println("")
 	fmt.Println("Please select an option to contiune")
 
 	fmt.Scan(&input)
-
-	file, err := os.Open("Transaction.CSV")
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer file.Close()
-
 	switch input {
 	case 1:
-		transaction.Date = CurrentDate
-		fmt.Println("Please provide the discription for the transaction")
-		fmt.Scan(&transaction.Description)
-		fmt.Println("Please enter the name")
-		fmt.Scan(&Entery.Name)
-		fmt.Println("Please enter the amount")
-		fmt.Scan(&Entery.Amount)
+		var NewTransaction types.Transactions
 
-		fmt.Print(transaction)
+		NewTransaction.Date = CurrentDate
+		NewTransaction.Id = len(Transactions) + 1
+		fmt.Println("Please enter the Description:")
+		fmt.Scan(&NewTransaction.Description)
+
+		for {
+			fmt.Println("Please enter the name or type done to finish")
+			fmt.Scan(&Entry.Name)
+			if Entry.Name == "done" {
+				break
+			}
+			fmt.Println("Please enter the amount")
+			fmt.Scan(&Entry.Amount)
+			NewTransaction.Entries = append(NewTransaction.Entries, Entry)
+		}
+
+		Transactions = append(Transactions, NewTransaction)
+		fmt.Println("Transaction created!")
+	case 2:
+		var id int
+
+		fmt.Println("Please enter the id:")
+		fmt.Scan(&id)
+
+		for i, transaction := range Transactions {
+			if transaction.Id == id {
+				fmt.Println("Updating transaction:", transaction)
+				fmt.Println("Enter the new Description:")
+				var NewDescription string
+				fmt.Scan(&NewDescription)
+				if NewDescription != "" {
+					Transactions[i].Description = NewDescription
+				}
+
+				fmt.Println("Do you want to edit entries?[y/n]:")
+				var editEntries string
+				fmt.Scan(&editEntries)
+				if editEntries == "y" {
+					var entries []types.AccountEntry
+					for {
+						var entry types.AccountEntry
+						fmt.Println("Please enter the name or type done to finish")
+						fmt.Scan(&entry.Name)
+						if entry.Name == "done" {
+							break
+						}
+
+						fmt.Println("Please enter the amount:")
+						fmt.Scan(&entry.Amount)
+						entries = append(entries, entry)
+					}
+					Transactions[i].Entries = entries
+				}
+				fmt.Println("Transaction updated!")
+				break
+			}
+		}
+	case 3:
+		var id int
+		fmt.Println("Enter the transaction ID to delete:")
+		fmt.Scan(&id)
+
+		for i, transaction := range Transactions {
+			if transaction.Id == id {
+				Transactions = append(Transactions[:i], Transactions[i+1:]...)
+				fmt.Println("Transaction deleted successfully!")
+				break
+			}
+		}
+	case 4:
+
+		fmt.Println("All Transactions:")
+		for _, transaction := range Transactions {
+			fmt.Printf("ID: %d, Date: %s, Description: %s\n", transaction.Id, transaction.Date, transaction.Description)
+			for _, entry := range transaction.Entries {
+				fmt.Printf("    Account: %s, Amount: %d\n", entry.Name, entry.Amount)
+			}
+		}
 
 	}
-
+	err = services.SaveTransaction("../data/transactions.csv", Transactions)
+	if err != nil {
+		fmt.Println("Error!:", err)
+	} else {
+		fmt.Println("Transactions saved!")
+	}
 }
